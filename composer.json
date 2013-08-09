@@ -1,0 +1,24 @@
+{
+    "name": "tunr/slimsurveys-api-php",
+    "description": "A REST client for the SlimSurveys API.",
+    "keywords": ["slimsurveys", "rest", "api"],
+    "authors": [
+        {
+            "name": "Nathan Stokes",
+            "email": "nathan@soulsender.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.0"
+    },
+    "require-dev": {
+        "mockery/mockery": ">=0.7.2",
+        "phpunit/phpunit": "3.7.*"
+    },
+    "autoload": {
+        "psr-0": {
+            "SlimSurveys": "src/"
+        }
+    },
+    "minimum-stability": "dev"
+}
