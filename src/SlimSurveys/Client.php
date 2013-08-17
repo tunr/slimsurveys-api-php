@@ -12,49 +12,64 @@ class Client
     const BASE_URL = 'https://slimsurveys.com/api/';
 
     /**
-     * API key.
+     * API key
      *
      * @var string
      */
     private $key = '';
 
     /**
-     * User authentication token.
+     * User authentication token
      *
      * @var string
      */
     private $token = '';
 
     /**
-     * Response data format.
+     * Response data format
      *
      * @var string
      */
     private $format = 'json';
 
     /**
-     * Request headers.
+     * Request headers
      *
      * @var array
      */
     private $headers = array();
 
     /**
-     * Default curl options.
+     * Dynamic curl options
      *
      * @var array
      */
-    private $options = array(
-        CURLOPT_CONNECTTIMEOUT => 10,
-        CURLOPT_TIMEOUT        => 30,
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_FOLLOWLOCATION => true,
-        CURLOPT_FAILONERROR    => false,
-        //CURLOPT_VERBOSE        => true,
+    private $options = array();
+
+    /**
+     * Request curl options
+     *
+     * @var array
+     */
+    private $requestOptions = array();
+
+    /**
+     * Default curl options
+     *
+     * @var array
+     */
+    private $defaultOptions = array(
+        CURLOPT_CONNECTTIMEOUT => 5,
+        CURLOPT_TIMEOUT        => 10,
+        CURLOPT_USERAGENT      => 'SlimSurveys-API-Client',
+        CURLOPT_RETURNTRANSFER => 1,
+        CURLOPT_FOLLOWLOCATION => 1,
+        CURLOPT_FAILONERROR    => 0,
+        CURLOPT_ENCODING       => 'utf-8',
     );
 
     /**
-     * Constructor.
+     * Constructor
      *
      * @param array $config configuration options
      *
@@ -62,44 +77,78 @@ class Client
      */
     public function __construct($config)
     {
-        // validate params
-
-        $this->key = (!empty($config['key'])) ? $config['key'] : '';
-
+        // todo: validate params
         // todo: make an array of accepted formats for validation
+
+        $this->key    = (!empty($config['key'])) ? $config['key'] : '';
         $this->format = (!empty($config['format'])) ? $config['format'] : $this->format;
 
-        if (!empty($config['token'])) {
-            $this->token = $config['token'];
+        if (!empty($config['token']))
+        {
+            $this->headers['X-AUTH-TOKEN'] = $config['token'];
         }
-
     }
 
-    // todo: add following methods
-    // public function setFormat()
-    // public function setToken()
-    // public function setKey()
-    // public function buildUrl()
-    // public function getCode()
-    // public function getInfo()
-    // public function getResponse()
+    /**
+     * Get authorization token
+     * 
+     * @return json
+     */
+    public function getAuthToken($email, $password)
+    {
+        $data = array(
+            'email'    => $email,
+            'password' => $password,
+        );
+
+        return $this->post('auth/token', $data);
+    }
 
     /**
-     * Add request header entry.
+     * Get authenticated users account
+     * 
+     * @return json
+     */
+    public function me()
+    {
+        return $this->get('users/me');
+    }
+
+    // ===================================================================================
+
+    /**
+     * Build header
+     *
+     * @return array()
+     */
+    private function buildHeader()
+    {
+        $headers = array();
+
+        foreach ($this->headers as $header => $content)
+        {
+            $headers[] = ($content) ? $header . ':' . $content : $header;
+        }
+
+        return $headers;
+    }
+
+    /**
+     * Set header entry
      *
      * @param $header header entry title
      * @param $content header entry content
      * @return SlimSurveys
      */
-    public function addHeader($header, $content = null)
+    public function setHeader($header, $content = null)
     {
-        $this->headers[] = ($content) ? $header . ':' . $content : $header;
+        $this->headers[$header] = $content;
 
         return $this;
     }
 
     /**
-     * Set curl config option.
+     * Set curl config option
      *
      * @param $code curl option code
      * @param $value curl option value
@@ -108,6 +157,21 @@ class Client
     public function setOption($code, $value)
     {
         $this->options[$code] = $value;
+        
+        return $this;
+    }
+
+    /**
+     * Set curl config options
+     *
+     * @param $options curl option code
+     * @return SlimSurveys
+     */
+    public function setOptions($options = array())
+    {
+        foreach ($options as $code => $value) {
+            $this->setOption($code, $value);
+        }
         
         return $this;
     }
@@ -123,18 +187,114 @@ class Client
     }
 
     /**
-     * Get authorization token
+     * Build complete url
      * 
-     * @return json
+     * @return string
      */
-    public function getAuthToken($email, $password)
+    private function buildUrl($url, $params)
     {
-        $credentials = array(
-            'email'    => $email,
-            'password' => $password,
-        );
+        $url = self::BASE_URL . trim($url, '/');
 
-        return $this->request('auth/token', 'post', array(), $credentials);
+        if ('json' !== $this->format) {
+            $params['format'] = $this->format;
+        }
+
+        if (is_array($params) && !empty($params)) {
+            $url .= '?' . http_build_query($params, '', '&');
+        }
+
+        $this->setOption(CURLOPT_URL, $url);
+
+        return $url;
+    }
+
+    /**
+     * Get request
+     * 
+     * @return void
+     */
+    private function get($url, $data = array())
+    {
+        $this->setup();
+        //$this->setOption(CURLOPT_RETURNTRANSFER, true);
+        $this->requestOptions[CURLOPT_RETURNTRANSFER] = 1;
+
+        return $this->request($url, $data);
+    }
+
+    /**
+     * Post request
+     * 
+     * @return void
+     */
+    private function post($url, $data = array())
+    {
+        $this->setup();
+        //$this->setOption(CURLOPT_POST, 1);
+        $this->requestOptions[CURLOPT_POST] = 1;
+        $this->setPostFields($data);
+
+        return $this->request($url);
+    }
+
+    /**
+     * Set post fields
+     * 
+     * @return void
+     */
+    private function setPostFields($data)
+    {
+        if (is_array($data)) {
+            //$this->setOption(CURLOPT_POSTFIELDS, $data);
+            $this->requestOptions[CURLOPT_POSTFIELDS] = $data;
+        }
+    }
+
+    /**
+     * Delete request
+     * 
+     * @return void
+     */
+    private function delete($url, $data = array())
+    {
+        $this->setup();
+        $this->requestOptions[CURLOPT_CUSTOMREQUEST] = 'DELETE';
+        $this->setPostFields($data);
+        
+        return $this->request($url);
+    }
+
+    /**
+     * Put request
+     * 
+     * @return void
+     */
+    private function put($url, $data = array())
+    {
+        $this->setup();
+
+        //$this->setOption(CURLOPT_CUSTOMREQUEST, 'PUT');
+        $this->requestOptions[CURLOPT_CUSTOMREQUEST] = 'PUT';
+        $this->setPostFields($data);
+        //$this->setUrl($url);
+        
+        return $this->request($url);
+    }
+
+    /**
+     * Setup request
+     * 
+     * @return void
+     */
+    private function setup()
+    {
+        $this->response       = '';
+        $this->info           = array();
+        $this->headers        = array();
+        $this->options        = $this->defaultOptions;
+        $this->requestOptions = array();
+        //$this->errorCode    = 0;
+        //$this->errorString  = '';
     }
 
     /**
@@ -142,33 +302,16 @@ class Client
      * 
      * @return json
      */
-    public function request($url, $method = 'get', $params = array(), $post = array())
+    public function request($url, $params = array())
     {
         // todo: file upload
         // todo: may need to build oauth header
 
-        $url = self::BASE_URL . trim($url, '/');
+        $this->setOptions($this->requestOptions);
 
-        if ('json' !== $this->format) {
-            $params['format'] = $this->format;
-        }
-
-        // validate request params
-        $params = (is_array($params)) ? $params : array();
-
-        if ($params) {
-            $url .= '?' . http_build_query($params, '', '&');
-        }
-
-        if ('POST' === strtoupper($method))
-        {
-            $this->setOption(CURLOPT_POST, true);
-            $this->setOption(CURLOPT_POSTFIELDS, http_build_query($post, '', '&'));
-        }
-
-        $this->addHeader('X-API-KEY', $this->key);
-        $this->setOption(CURLOPT_HTTPHEADER, $this->headers);
-        $this->setOption(CURLOPT_URL, $url);
+        $this->buildUrl($url, $params);
+        $this->setHeader('X-API-KEY', $this->key);
+        $this->setOption(CURLOPT_HTTPHEADER, $this->buildHeader());
 
         $curl = curl_init();
 
@@ -181,6 +324,9 @@ class Client
             $errorCode    = curl_errno($curl);
             $errorMessage = curl_error($curl);
             
+            //var_dump($errorCode);
+            //var_dump($errorMessage);
+
             // todo: populate exception, close session, throw exception
             // throw new SlimSurveysApiException($errorMessage, $errorCode);
         }
@@ -190,25 +336,13 @@ class Client
         return $this->response;
     }
 
-    /**
-     * Debug curl request
-     * 
-     * @return void
-     */
-    public function debug()
-    {
-        var_dump($this->response);
-        var_dump($this->info);
-        var_dump($this->options);
-        var_dump($this->headers);
-    }
 }
 
 /*
  * Slim surveys api exception.
  */
 class ApiException extends \Exception {
-    // todo
+    // todo: integrate exception handling
 }
 
 /*
