@@ -172,10 +172,6 @@ class Client
         $this->setField('file', $file);
         $this->setField('position', $positon);
 
-        //$this->setOption(CURLOPT_POSTFIELDS, http_build_query($this->fields, '', '&'));
-        //$this->setOption(CURLOPT_POST, 1);
-        //return $this->request();
-        
         return $this->post();
     }
 
@@ -183,40 +179,6 @@ class Client
     public function deleteImage($imageId)
     {
         return $this->setUrl('images/image/' . $imageId)->delete();
-    }
-
-// ===================================================================================
-// surveys
-// ===================================================================================
-
-    // get survey
-    public function getSurvey($surveyId)
-    {
-        $this->setUrl('surveys/survey')->applyResourceId('survey_uid', $surveyId);
-
-        return $this->get();
-    }
-
-    // get survey embed
-    public function getSurveyEmbed($surveyId)
-    {
-        $this->setUrl('surveys/embed')->applyResourceId('survey_uid', $surveyId);
-
-        return $this->get();
-    }
-
-    // get user surveys
-    public function getUserSurveys($userId)
-    {
-        $this->setUrl('surveys/user')->applyResourceId('username', $userId);
-
-        return $this->get();
-    }
-
-    // get my surveys
-    public function getMySurveys()
-    {
-        return $this->setUrl('surveys/mine')->get();
     }
 
 // ===================================================================================
@@ -263,6 +225,40 @@ class Client
     public function getQuestionResults($questionId)
     {
         return $this->setUrl('results/question/' . $questionId)->get();
+    }
+
+// ===================================================================================
+// surveys
+// ===================================================================================
+
+    // get survey
+    public function getSurvey($surveyId)
+    {
+        $this->setUrl('surveys/survey')->applyResourceId('survey_uid', $surveyId);
+
+        return $this->get();
+    }
+
+    // get survey embed
+    public function getSurveyEmbed($surveyId)
+    {
+        $this->setUrl('surveys/embed')->applyResourceId('survey_uid', $surveyId);
+
+        return $this->get();
+    }
+
+    // get user surveys
+    public function getUserSurveys($userId)
+    {
+        $this->setUrl('surveys/user')->applyResourceId('username', $userId);
+
+        return $this->get();
+    }
+
+    // get my surveys
+    public function getMySurveys()
+    {
+        return $this->setUrl('surveys/mine')->get();
     }
 
 // ===================================================================================
