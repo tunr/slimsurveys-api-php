@@ -169,8 +169,8 @@ class Client
     public function createQuestionImage($questionId, $file, $position = 0)
     {
         $this->setUrl('images/create/' . $questionId);
-        $this->setField('file', $file);
-        $this->setField('position', $positon);
+        $this->setField('file', '@' . $file);
+        $this->setField('position', $position);
 
         return $this->post();
     }
@@ -458,8 +458,8 @@ class Client
      */
     private function post()
     {
-        $this->setPostFields();
         $this->setOption(CURLOPT_POST, 1);
+        $this->setPostFields();
 
         return $this->request();
     }
@@ -473,7 +473,7 @@ class Client
     {
         if (!empty($this->fields))
         {
-            $this->setOption(CURLOPT_POSTFIELDS, http_build_query($this->fields, '', '&'));
+            $this->setOption(CURLOPT_POSTFIELDS, $this->fields);
         }
 
         return $this;
@@ -546,14 +546,12 @@ class Client
         curl_setopt_array($curl, $this->options);
 
         $this->response = curl_exec($curl);
+        $this->info     = curl_getinfo($curl);
 
         if (false !== $this->response)
         {
-            $data = json_decode($this->response);
+            $this->data = json_decode($this->response);
         }
-
-        $this->data = $data;
-        $this->info = curl_getinfo($curl);
 
         $this->info['error_code']    = curl_errno($curl);
         $this->info['error_message'] = curl_error($curl);
