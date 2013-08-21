@@ -359,6 +359,86 @@ class Client
         return $this->setUrl('users/me')->get();
     }
 
+    public function register($email, $password, $notifications = true)
+    {
+        return $this->setUrl('users/signup')
+            ->setField('email', $email)
+            ->setField('password', $password)
+            ->setField('notifications', $notifications)
+            ->post();
+    }
+
+    public function getPasswordResetToken($email)
+    {
+        return $this->setUrl('users/forgot')
+            ->setField('email', $email)
+            ->post();
+    }
+
+    public function resetPassword($token, $password, $confirm)
+    {
+        return $this->setUrl('users/reset/' . $token)
+            ->setField('password', $password)
+            ->setField('confirm', $confirm)
+            ->post();
+    }
+
+    public function updateSurveyTab($surveyId)
+    {
+        return $this->setUrl('users/tab/' . $surveyId)->post();
+    }
+
+    public function updateSurveyTabByUid($surveyId)
+    {
+        return $this->setUrl('users/tab')
+            ->setQuery('survey_id', $surveyId)
+            ->post();
+    }
+
+    public function updateVanityName($name)
+    {
+        return $this->setUrl('users/vanity')
+            ->setField('url', $name)
+            ->post();
+    }
+
+    public function updatePrivacy($flag)
+    {
+        return $this->setUrl('users/privacy')
+            ->setField('privacy', $flag)
+            ->post();
+    }
+
+    public function updateEmail($email)
+    {
+        return $this->setUrl('users/email')
+            ->setField('email', $email)
+            ->post();
+    }
+
+    public function updateThanks($facebook = null, $twitter = null, $website = null)
+    {
+        return $this->setUrl('users/thanks')
+            ->setField('facebook', $facebook)
+            ->setField('twitter', $twitter)
+            ->setField('website', $website)
+            ->post();
+
+    }
+
+    public function updatePassword($password, $confirm)
+    {
+        return $this->setUrl('users/password')
+            ->setField('password', $password)
+            ->setField('confirm', $confirm)
+            ->post();
+    }
+
+    public function deleteSurveyTab()
+    {
+        return $this->setUrl('users/tab')->delete();
+    }
+
 // ===================================================================================
 // #request
 // ===================================================================================
