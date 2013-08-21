@@ -142,10 +142,10 @@ class Client
     // create question answer
     public function createQuestionAnswer($questionId, $answer, $milestone = '', $uvid = '')
     {
-        $this->setUrl('answers/question/' . $questionId);
-        $this->setField('answer', $answer);
-        $this->setField('milestone', $milestone);
-        $this->setField('uvid', $uvid);
+        return $this->setUrl('answers/question/' . $questionId)
+            ->setField('answer', $answer)
+            ->setField('milestone', $milestone)
+            ->setField('uvid', $uvid);
 
         return $this->post();
     }
@@ -199,6 +199,36 @@ class Client
     }
 
 // ===================================================================================
+// options
+// ===================================================================================
+
+    public function getOption($optionId)
+    {
+        return $this->setUrl('options/option/' . $optionId)->get();
+    }
+
+    public function createQuestionOption($questionId, $value = null, $position = 0)
+    {
+        return $this->setUrl('options/create/' . $questionId)
+            ->setField('value', $value)
+            ->setField('position', $position)
+            ->post();
+    }
+
+    public function updateOption($optionId, $value, $position = 0)
+    {
+        return $this->setUrl('options/option/' . $optionId)
+            ->setField('value', $value)
+            ->setField('position', $position)
+            ->post();
+    }
+
+    public function deleteOption($optionId)
+    {
+        return $this->setUrl('options/option/' . $optionId)->delete();
+    }
+
+// ===================================================================================
 // questions
 // ===================================================================================
 
@@ -208,22 +238,34 @@ class Client
         return $this->setUrl('questions/question/' . $questionId)->get();
     }
 
-    // get question answers
-    public function createSurveyQuestion($surveyId, $byUid)
+    // create survey question
+    public function createSurveyQuestion($surveyId, $type, $text = '', $position = 0)
     {
-        return $this->setUrl('questions/create/' . $surveyId)->post();
+        return $this->setUrl('questions/create/' . $surveyId)
+            ->setField('type', $type)
+            ->setField('text', $text)
+            ->setField('position', $position)
+            ->post();
     }
 
-    // get question answers
-    public function createSurveyQuestionByUid($surveyId, $byUid)
+    // create survey question by uid
+    public function createSurveyQuestionByUid($surveyId, $type, $text = '', $position = 0)
     {
-        return $this->setUrl('questions/create/' . $surveyId)->post();
+        return $this->setUrl('questions/create')
+            ->setQuery('survey_uid', $surveyId)
+            ->setField('type', $type)
+            ->setField('text', $text)
+            ->setField('position', $position)
+            ->post();
     }
 
-    // get question answers
-    public function updateQuestion($questionId)
+    // update question
+    public function updateQuestion($questionId, $text = '', $position = 0)
     {
-        return $this->setUrl('questions/question/' . $questionId)->post();
+        return $this->setUrl('questions/question/' . $questionId)
+            ->setField('text', $text)
+            ->setField('position', $position)
+            ->post();
     }
 
     // delete question
@@ -324,7 +366,8 @@ class Client
 
     /**
      * Set url
-     * 
+     *
+     * @param  string $url resource url
      * @return $this
      */
     public function setUrl($url)
@@ -346,7 +389,8 @@ class Client
         $url     = self::BASE_URL . trim($this->url, '/');
         $queries = $this->queries;
 
-        if (!empty($queries)) {
+        if (!empty($queries))
+        {
             $url .= '?' . http_build_query($queries, '', '&');
         }
 
@@ -459,7 +503,8 @@ class Client
      */
     private function setFields($fields = array())
     {
-        foreach ($fields as $key => $value) {
+        foreach ($fields as $key => $value)
+        {
             $this->setField($key, $value);
         }
 
@@ -483,10 +528,9 @@ class Client
      */
     private function post()
     {
-        $this->setOption(CURLOPT_POST, 1);
-        $this->setPostFields();
-
-        return $this->request();
+        return $this->setOption(CURLOPT_POST, 1)
+            ->setPostFields()
+            ->request();
     }
 
     /**
@@ -511,10 +555,9 @@ class Client
      */
     private function delete()
     {
-        $this->setPostFields();
-        $this->setOption(CURLOPT_CUSTOMREQUEST, 'DELETE');
-
-        return $this->request();
+        return $this->setPostFields()
+            ->setOption(CURLOPT_CUSTOMREQUEST, 'DELETE')
+            ->request();
     }
 
     /**
@@ -524,10 +567,9 @@ class Client
      */
     private function put()
     {
-        $this->setPostFields();
-        $this->setOption(CURLOPT_CUSTOMREQUEST, 'PUT');
-
-        return $this->request();
+        return $this->setPostFields()
+            ->setOption(CURLOPT_CUSTOMREQUEST, 'PUT')
+            ->request();
     }
 
     /**
@@ -573,11 +615,6 @@ class Client
         $this->response = curl_exec($curl);
         $this->info     = curl_getinfo($curl);
 
-        if (false !== $this->response)
-        {
-            $this->data = json_decode($this->response);
-        }
-
         $this->info['error_code']    = curl_errno($curl);
         $this->info['error_message'] = curl_error($curl);
 
@@ -591,8 +628,13 @@ class Client
      * 
      * @return json
      */
-    public function getData()
+    public function getData($associative = false)
     {
+        if ((false !== $this->response) && is_null($this->data))
+        {
+            $this->data = json_decode($this->response, $associative);
+        }
+
         return $this->data;
     }
 
@@ -608,7 +650,8 @@ class Client
 
     /**
      * Get request info
-     * 
+     *
+     * @param  string $key info array key
      * @return array|string
      */
     public function getInfo($key = null)
