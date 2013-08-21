@@ -61,14 +61,14 @@ class Client
     private $fields = array();
 
     /**
-     * Response data
+     * Formatted response data
      *
      * @var array
      */
     private $data = null;
 
     /**
-     * Curl info
+     * Response info
      *
      * @var array
      */
@@ -77,18 +77,13 @@ class Client
     /**
      * Constructor
      *
-     * @param array $config configuration options
-     *
-     * @return void
+     * @param string $key   api key
+     * @param string $token auth token
      */
-    public function __construct(array $config)
+    public function __construct($key, $token = '')
     {
-        $this->key = (!empty($config['key'])) ? (string) $config['key'] : '';
-
-        if (!empty($config['token']))
-        {
-            $this->token = (string) $config['token'];
-        }
+        $this->key   = $key;
+        $this->token = $token;
     }
 
 // ===================================================================================
@@ -98,7 +93,7 @@ class Client
     /**
      * Get authorization token
      * 
-     * @return $this
+     * @return Client
      */
     public function getAuthToken($email, $password)
     {
@@ -116,7 +111,11 @@ class Client
 // #answers
 // ===================================================================================
 
-    // get survey answers
+    /**
+     * Get authorization token
+     * 
+     * @return Client
+     */
     public function getSurveyAnswers($surveyId, $uvid = null)
     {
         return $this->setUrl('answers/survey/' . $surveyId)
@@ -124,7 +123,13 @@ class Client
             ->get();
     }
 
-    // get survey answers by uid
+    /**
+     * Get survey answers by uid
+     *
+     * @param  string $surveyId survey id
+     * @param  string $uvid     uvid
+     * @return Client
+     */
     public function getSurveyAnswersByUid($surveyId, $uvid = null)
     {
         return $this->setUrl('answers/survey')
@@ -133,13 +138,26 @@ class Client
             ->get();
     }
 
-    // get question answers
+    /**
+     * Get question answers
+     * 
+     * @param  integer $questionId question id
+     * @return Client
+     */
     public function getQuestionAnswers($questionId)
     {
         return $this->setUrl('answers/question/' . $questionId)->get();
     }
 
-    // create question answer
+    /**
+     * Create question answer
+     * 
+     * @param  integer $questionId question id
+     * @param  string  $answer     answer
+     * @param  string $milestone   milestone
+     * @param  string $uvid        uvid
+     * @return Client
+     */
     public function createQuestionAnswer($questionId, $answer, $milestone = '', $uvid = '')
     {
         return $this->setUrl('answers/question/' . $questionId)
@@ -444,10 +462,23 @@ class Client
 // ===================================================================================
 
     /**
+     * Set api token
+     *
+     * @param  string $token api token
+     * @return Client
+     */
+    public function setToken($token)
+    {
+        $this->token = $token;
+
+        return $this;
+    }
+
+    /**
      * Set url
      *
      * @param  string $url resource url
-     * @return $this
+     * @return Client
      */
     public function setUrl($url)
     {
@@ -481,15 +512,15 @@ class Client
     /**
      * Build header
      *
-     * @return array()
+     * @return Client
      */
     private function buildHeader()
     {
-        $this->headers['X-API-KEY'] = $this->key;
+        $this->headers['X-API-KEY'] = (string) $this->key;
 
         if ($this->token)
         {
-            $this->headers['X-AUTH-TOKEN'] = $this->token;
+            $this->headers['X-AUTH-TOKEN'] = (string) $this->token;
         }
 
         foreach ($this->headers as $header => $content)
@@ -505,9 +536,9 @@ class Client
     /**
      * Set header entry
      *
-     * @param $key key
-     * @param $value value
-     * @return SlimSurveys
+     * @param  $key   key
+     * @param  $value value
+     * @return Client
      */
     private function setHeader($key, $value = null)
     {
@@ -519,9 +550,9 @@ class Client
     /**
      * Set config option
      *
-     * @param $key key
-     * @param $value value
-     * @return SlimSurveys
+     * @param  $key   key
+     * @param  $value value
+     * @return Client
      */
     private function setOption($key, $value)
     {
@@ -533,9 +564,9 @@ class Client
     /**
      * Set query parameter
      *
-     * @param $key key
-     * @param $value value
-     * @return SlimSurveys
+     * @param  $key   key
+     * @param  $value value
+     * @return Client
      */
     private function setQuery($key, $value)
     {
@@ -548,7 +579,7 @@ class Client
      * Set query parameters
      *
      * @param $queries query parameters
-     * @return SlimSurveys
+     * @return Client
      */
     private function setQueries($queries = array())
     {
@@ -563,9 +594,9 @@ class Client
     /**
      * Set post field
      *
-     * @param $key key
-     * @param $value value
-     * @return SlimSurveys
+     * @param  $key   key
+     * @param  $value value
+     * @return Client
      */
     private function setField($key, $value)
     {
@@ -577,8 +608,8 @@ class Client
     /**
      * Set post fields
      *
-     * @param $fields post fields
-     * @return SlimSurveys
+     * @param  $fields post fields
+     * @return Client
      */
     private function setFields($fields = array())
     {
@@ -593,7 +624,7 @@ class Client
     /**
      * Get request
      * 
-     * @return void
+     * @return Client
      */
     private function get()
     {
@@ -603,7 +634,7 @@ class Client
     /**
      * Post request
      * 
-     * @return void
+     * @return Client
      */
     private function post()
     {
@@ -615,7 +646,7 @@ class Client
     /**
      * Set post fields
      * 
-     * @return void
+     * @return Client
      */
     private function setPostFields()
     {
@@ -630,7 +661,7 @@ class Client
     /**
      * Delete request
      * 
-     * @return void
+     * @return Client
      */
     private function delete()
     {
@@ -642,7 +673,7 @@ class Client
     /**
      * Put request
      * 
-     * @return void
+     * @return Client
      */
     private function put()
     {
@@ -654,7 +685,7 @@ class Client
     /**
      * Reset request settings
      * 
-     * @return void
+     * @return Client
      */
     private function reset()
     {
@@ -680,7 +711,7 @@ class Client
     /**
      * Make api request
      * 
-     * @return json
+     * @return Client
      */
     private function request()
     {
@@ -703,9 +734,9 @@ class Client
     }
 
     /**
-     * Make api request
+     * Get response data
      * 
-     * @return json
+     * @return object|array
      */
     public function getData($associative = false)
     {
@@ -720,7 +751,7 @@ class Client
     /**
      * Get raw response
      * 
-     * @return json
+     * @return string json
      */
     public function getResponse()
     {
@@ -746,7 +777,7 @@ class Client
     /**
      * Get http response code
      * 
-     * @return string
+     * @return integer
      */
     public function getCode()
     {
