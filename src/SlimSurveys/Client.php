@@ -61,11 +61,11 @@ class Client
     private $fields = array();
 
     /**
-     * Formatted response data
+     * Raw response
      *
-     * @var array
+     * @var string
      */
-    private $data = null;
+    private $response = '';
 
     /**
      * Response info
@@ -73,6 +73,13 @@ class Client
      * @var array
      */
     private $info = array();
+
+    /**
+     * Formatted response data
+     *
+     * @var null|object|array
+     */
+    private $data = null;
 
     /**
      * Constructor
@@ -171,7 +178,14 @@ class Client
 // #identities
 // ===================================================================================
 
-    // create identity
+    /**
+     * Create survey identity
+     * 
+     * @param  integer $surveyId survey id
+     * @param  string  $uvid     uvid
+     * @param  array   $data     data
+     * @return Client
+     */
     public function createSurveyIdentity($surveyId, $uvid, $data)
     {
         return $this->setUrl('identities/create/' . $surveyId)
@@ -180,7 +194,14 @@ class Client
             ->post();
     }
 
-    // create survey identity by uid
+    /**
+     * Create survey identity by uid
+     * 
+     * @param  string  $surveyId survey uid
+     * @param  string  $uvid     uvid
+     * @param  array   $data     data
+     * @return Client
+     */
     public function createSurveyIdentityByUid($surveyId, $uvid, $data)
     {
         return $this->setUrl('identities/create')
@@ -194,13 +215,25 @@ class Client
 // #images
 // ===================================================================================
 
-    // get question answers
+    /**
+     * Get image by id
+     * 
+     * @param  integer $imageId image id
+     * @return Client
+     */
     public function getImage($imageId)
     {
         return $this->setUrl('images/image/' . $imageId)->get();
     }
 
-    // create question image
+    /**
+     * Create question image
+     * 
+     * @param  integer $questionId question id
+     * @param  string  $file       path to file
+     * @param  integer $position   position
+     * @return Client
+     */
     public function createQuestionImage($questionId, $file, $position = 0)
     {
         return $this->setUrl('images/create/' . $questionId)
@@ -209,7 +242,12 @@ class Client
             ->post();
     }
 
-    // delete image
+    /**
+     * Delete image
+     * 
+     * @param  integer $imageId image id
+     * @return Client
+     */
     public function deleteImage($imageId)
     {
         return $this->setUrl('images/image/' . $imageId)->delete();
@@ -219,11 +257,25 @@ class Client
 // #options
 // ===================================================================================
 
+    /**
+     * Get option
+     * 
+     * @param  integer $optionId option id
+     * @return Client
+     */
     public function getOption($optionId)
     {
         return $this->setUrl('options/option/' . $optionId)->get();
     }
 
+    /**
+     * Create question option
+     * 
+     * @param  integer $questionId question id
+     * @param  string  $value      option text
+     * @param  integer $position   position
+     * @return Client
+     */
     public function createQuestionOption($questionId, $value = null, $position = 0)
     {
         return $this->setUrl('options/create/' . $questionId)
@@ -232,6 +284,14 @@ class Client
             ->post();
     }
 
+    /**
+     * Update option
+     * 
+     * @param  integer $optionId option id
+     * @param  string  $value    option text
+     * @param  integer $position position
+     * @return Client
+     */
     public function updateOption($optionId, $value, $position = 0)
     {
         return $this->setUrl('options/option/' . $optionId)
@@ -240,6 +300,12 @@ class Client
             ->post();
     }
 
+    /**
+     * Delete option
+     * 
+     * @param  integer $optionId option id
+     * @return Client
+     */
     public function deleteOption($optionId)
     {
         return $this->setUrl('options/option/' . $optionId)->delete();
@@ -249,13 +315,26 @@ class Client
 // #questions
 // ===================================================================================
 
-    // get question
+    /**
+     * Get question
+     * 
+     * @param  integer $questionId question id
+     * @return Client
+     */
     public function getQuestion($questionId)
     {
         return $this->setUrl('questions/question/' . $questionId)->get();
     }
 
-    // create survey question
+    /**
+     * Create survey question
+     * 
+     * @param  integer $surveyId survey id
+     * @param  string  $type     question type
+     * @param  string  $text     question text
+     * @param  integer $position position
+     * @return Client
+     */
     public function createSurveyQuestion($surveyId, $type, $text = '', $position = 0)
     {
         return $this->setUrl('questions/create/' . $surveyId)
@@ -265,7 +344,15 @@ class Client
             ->post();
     }
 
-    // create survey question by uid
+    /**
+     * Create survey question by uid
+     * 
+     * @param  integer $surveyId survey uid
+     * @param  string  $type     question type
+     * @param  string  $text     question text
+     * @param  integer $position position
+     * @return Client
+     */
     public function createSurveyQuestionByUid($surveyId, $type, $text = '', $position = 0)
     {
         return $this->setUrl('questions/create')
@@ -276,7 +363,14 @@ class Client
             ->post();
     }
 
-    // update question
+    /**
+     * Update question
+     * 
+     * @param  integer $questionId question id
+     * @param  string  $text       question text
+     * @param  integer $position   position
+     * @return Client
+     */
     public function updateQuestion($questionId, $text = '', $position = 0)
     {
         return $this->setUrl('questions/question/' . $questionId)
@@ -285,7 +379,12 @@ class Client
             ->post();
     }
 
-    // delete question
+    /**
+     * Delete question
+     * 
+     * @param  integer $questionId question id
+     * @return Client
+     */
     public function deleteQuestion($questionId)
     {
         return $this->setUrl('questions/question/' . $questionId)->delete();
@@ -295,13 +394,23 @@ class Client
 // #results
 // ===================================================================================
 
-    // get survey results
+    /**
+     * Get survey results
+     * 
+     * @param  integer $surveyId survey id
+     * @return Client
+     */
     public function getSurveyResults($surveyId)
     {
         return $this->setUrl('results/survey/' . $surveyId)->get();
     }
 
-    // get survey results
+    /**
+     * Get survey results bu uid
+     * 
+     * @param  integer $surveyId survey uid
+     * @return Client
+     */
     public function getSurveyResultsByUid($surveyId)
     {
         return $this->setUrl('results/survey')
@@ -309,7 +418,12 @@ class Client
             ->get();
     }
 
-    // get question results
+    /**
+     * Get question results
+     * 
+     * @param  integer $questionId question id
+     * @return Client
+     */
     public function getQuestionResults($questionId)
     {
         return $this->setUrl('results/question/' . $questionId)->get();
@@ -319,13 +433,23 @@ class Client
 // #surveys
 // ===================================================================================
 
-    // get survey
+    /**
+     * Get survey
+     * 
+     * @param  integer $surveyId survey id
+     * @return Client
+     */
     public function getSurvey($surveyId)
     {
         return $this->setUrl('surveys/survey/' . $surveyId)->get();
     }
 
-    // get survey
+    /**
+     * Get survey by uid
+     * 
+     * @param  integer $surveyId survey uid
+     * @return Client
+     */
     public function getSurveyByUid($surveyId)
     {
         return $this->setUrl('surveys/survey')
@@ -333,13 +457,23 @@ class Client
             ->get();
     }
 
-    // get survey embed
+    /**
+     * Get survey embed
+     * 
+     * @param  integer $surveyId survey id
+     * @return Client
+     */
     public function getSurveyEmbed($surveyId)
     {
         return $this->setUrl('surveys/embed/' . $surveyId)->get();
     }
 
-    // get survey embed
+    /**
+     * Get survey embed by uid
+     * 
+     * @param  integer $surveyId survey uid
+     * @return Client
+     */
     public function getSurveyEmbedByUid($surveyId)
     {
         return $this->setUrl('surveys/embed')
@@ -347,21 +481,35 @@ class Client
             ->get();
     }
 
-    // get user surveys
+    /**
+     * Get user surveys
+     * 
+     * @param  integer $userId user id
+     * @return Client
+     */
     public function getUserSurveys($userId)
     {
         return $this->setUrl('surveys/user/' . $userId)->get();
     }
 
-    // get user surveys
-    public function getUserSurveysByUsername($userId)
+    /**
+     * Get user surveys by username
+     * 
+     * @param  string $username username
+     * @return Client
+     */
+    public function getUserSurveysByUsername($username)
     {
         return $this->setUrl('surveys/user')
-            ->setQuery('username', $userId)
+            ->setQuery('username', $username)
             ->get();
     }
 
-    // get my surveys
+    /**
+     * Get authenticated user's surveys
+     * 
+     * @return Client
+     */
     public function getMySurveys()
     {
         return $this->setUrl('surveys/mine')->get();
@@ -371,12 +519,24 @@ class Client
 // #users
 // ===================================================================================
 
-    // Get authenticated users account
+    /**
+     * Get authenticated user's profile
+     * 
+     * @return Client
+     */
     public function me()
     {
         return $this->setUrl('users/me')->get();
     }
 
+    /**
+     * Register new user
+     * 
+     * @param  string  $email         email
+     * @param  string  $password      password
+     * @param  boolean $notifications notifications flag
+     * @return Client
+     */
     public function register($email, $password, $notifications = true)
     {
         return $this->setUrl('users/signup')
@@ -386,6 +546,12 @@ class Client
             ->post();
     }
 
+    /**
+     * Get password reset token
+     * 
+     * @param  string $email email
+     * @return Client
+     */
     public function getPasswordResetToken($email)
     {
         return $this->setUrl('users/forgot')
@@ -393,6 +559,14 @@ class Client
             ->post();
     }
 
+    /**
+     * Reset password
+     * 
+     * @param  string $token    password reset token
+     * @param  string $password password
+     * @param  string $confirm  password confirmation
+     * @return Client
+     */
     public function resetPassword($token, $password, $confirm)
     {
         return $this->setUrl('users/reset/' . $token)
@@ -401,11 +575,23 @@ class Client
             ->post();
     }
 
+    /**
+     * Update survey tab
+     * 
+     * @param  integer $surveyId survey id
+     * @return Client
+     */
     public function updateSurveyTab($surveyId)
     {
         return $this->setUrl('users/tab/' . $surveyId)->post();
     }
 
+    /**
+     * Update survey tab by uid
+     * 
+     * @param  integer $surveyId survey uid
+     * @return Client
+     */
     public function updateSurveyTabByUid($surveyId)
     {
         return $this->setUrl('users/tab')
@@ -413,6 +599,12 @@ class Client
             ->post();
     }
 
+    /**
+     * Update vanity name
+     * 
+     * @param  string $name vanity name
+     * @return Client
+     */
     public function updateVanityName($name)
     {
         return $this->setUrl('users/vanity')
@@ -420,13 +612,27 @@ class Client
             ->post();
     }
 
+    /**
+     * Update privacy
+     * 
+     * @param  boolean $flag true/false flag
+     * @return Client
+     */
     public function updatePrivacy($flag)
     {
+        $flag = (true === $flag) ? 'true' : 'false';
+
         return $this->setUrl('users/privacy')
             ->setField('privacy', $flag)
             ->post();
     }
 
+    /**
+     * Update email address
+     * 
+     * @param  string $email email
+     * @return Client
+     */
     public function updateEmail($email)
     {
         return $this->setUrl('users/email')
@@ -434,6 +640,14 @@ class Client
             ->post();
     }
 
+    /**
+     * Update extenal references on thank you page
+     * 
+     * @param  string $facebook facebook url
+     * @param  string $twitter  twitter url
+     * @param  string $website  website url
+     * @return Client
+     */
     public function updateThanks($facebook = null, $twitter = null, $website = null)
     {
         return $this->setUrl('users/thanks')
@@ -444,6 +658,13 @@ class Client
 
     }
 
+    /**
+     * Update password
+     * 
+     * @param  string $password password
+     * @param  string $confirm  password confirmation
+     * @return Client
+     */
     public function updatePassword($password, $confirm)
     {
         return $this->setUrl('users/password')
@@ -452,6 +673,11 @@ class Client
             ->post();
     }
 
+    /**
+     * Delete survey tab
+     * 
+     * @return Client
+     */
     public function deleteSurveyTab()
     {
         return $this->setUrl('users/tab')->delete();
@@ -571,22 +797,6 @@ class Client
     private function setQuery($key, $value)
     {
         $this->queries[$key] = $value;
-        
-        return $this;
-    }
-
-    /**
-     * Set query parameters
-     *
-     * @param $queries query parameters
-     * @return Client
-     */
-    private function setQueries($queries = array())
-    {
-        foreach ($queries as $key => $value)
-        {
-            $this->setQuery($key, $value);
-        }
         
         return $this;
     }
@@ -725,8 +935,15 @@ class Client
         $this->response = curl_exec($curl);
         $this->info     = curl_getinfo($curl);
 
-        $this->info['error_code']    = curl_errno($curl);
-        $this->info['error_message'] = curl_error($curl);
+        if (false === $this->response)
+        {
+            $error     = curl_error($curl);
+            $errorCode = curl_errno($curl);
+
+            curl_close($curl);
+
+            throw new ClientException($error, $errorCode);
+        }
 
         curl_close($curl);
 
@@ -740,7 +957,7 @@ class Client
      */
     public function getData($associative = false)
     {
-        if ((false !== $this->response) && is_null($this->data))
+        if (is_null($this->data))
         {
             $this->data = json_decode($this->response, $associative);
         }
@@ -783,11 +1000,30 @@ class Client
     {
         return $this->getInfo('http_code');
     }
+
+    /**
+     * Compare response code
+     *
+     * @param  integer $code http code
+     * @return boolean
+     */
+    public function isCode($code)
+    {
+        return (int) $code === $this->getCode();
+    }
 }
 
 /*
- * Slim surveys exception.
+ * SlimSurveys client exception
+ */
+class ClientException extends \Exception
+{
+    // generic php exception wrapper
+}
+
+/*
+ * Verify curl is available
  */
 if (!function_exists('curl_init')) {
-    throw new Exception('SlimSurveys API client requires the CURL PHP extension.');
+    throw new \Exception('SlimSurveys API client requires the CURL PHP extension.');
 }
