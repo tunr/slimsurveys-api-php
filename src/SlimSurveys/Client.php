@@ -952,7 +952,8 @@ class Client
 
     /**
      * Get response data
-     * 
+     *
+     * @param  boolean $associative associative array output
      * @return object|array
      */
     public function getData($associative = false)
