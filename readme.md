@@ -90,7 +90,7 @@ else
 
 ### Data
 
-The data getter allows you to return a formatted version of the data return by the SlimSurveys API. Data is returned as a object by default, but can be returned as an associative array by passing `true` to the data getter.
+The data getter allows you to return a formatted version of the JSON data returned by the SlimSurveys API. Data is returned as an object by default, but can be returned as an associative array by passing `true` to the data getter.
 
 ```
 $data = $response->getData(true);
@@ -100,7 +100,7 @@ $token = $data['token'];
 
 ### Debugging
 
-Since the entire client instance is returned by each API method, a simple var_dump($response) will provide some visibility into how an API request is configured.
+Since the entire client instance is returned by each API method, a simple `var_dump($response)` will provide some visibility into how an API request is configured.
 
 ```
 $response = $slimClient->getMySurveys();
