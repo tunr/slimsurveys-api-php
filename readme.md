@@ -5,7 +5,6 @@ SlimSurveys is a micro-survey platform to help people improve survey completion 
 This repository contains a PHP client library to interface with the SlimSurveys API.
 
 ### API Key
-
 First things first, visit the SlimSurveys site to request an API key.
 
 [https://slimsurveys.com/developer](https://slimsurveys.com/developer)
@@ -22,7 +21,7 @@ Then run `composer install` to get the code and update your autoloader.
 
 ### Create the Client
 
-Now with your trusty API key and fresh install, you can create a client instance.
+Now with your trusty API key, create a client instance.
 
 ```
 $apiKey = 'XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX';
@@ -50,11 +49,7 @@ $data  = $response->getData();
 $token = $data->token;
 
 ```
-Since an authentication token doesn't expire, so you'll want to store it so it can be used for multiple requests.
-Currently an authentication token doesn't expire so it can be used as long as necessary. 
-
-Once you have a token, it can be passed to the client through the constructor.
-
+Currently an authentication token doesn't expire so it can be stored and used for multiple requests. Once you have a token, it can be passed to the client through the constructor.
 ```
 $apiKey = 'XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX';
 $token  = 'XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX';
@@ -95,7 +90,7 @@ else
 
 ### Data
 
-The data getter allows you to return a formatted version of the data return by the SlimSurveys API. Data is returned as a object by default, but can be returned as an associatve array by passing `true` to the data getter.
+The data getter allows you to return a formatted version of the data return by the SlimSurveys API. Data is returned as a object by default, but can be returned as an associative array by passing `true` to the data getter.
 
 ```
 $data = $response->getData(true);
@@ -105,7 +100,7 @@ $token = $data['token'];
 
 ### Debugging
 
-Since the entire client instance is returned by each API method, a simple var_dump($response) will provide some visibilty into how an API request is configured.
+Since the entire client instance is returned by each API method, a simple var_dump($response) will provide some visibility into how an API request is configured.
 
 ```
 $response = $slimClient->getMySurveys();
