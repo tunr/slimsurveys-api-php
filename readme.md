@@ -24,9 +24,9 @@ Then run `composer install` to get the code and update your autoloader.
 Now with your trusty API key, create a client instance.
 
 ```
-$apiKey = 'XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX';
+$key = 'XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX';
 
-$slimClient = new \SlimSurveys\Client($apiKey);
+$slimClient = new \SlimSurveys\Client($key);
 ```
 
 API methods can then be called on the client instance.
@@ -51,10 +51,10 @@ $token = $data->token;
 ```
 Currently an authentication token doesn't expire so it can be stored and used for multiple requests. Once you have a token, it can be passed to the client through the constructor.
 ```
-$apiKey = 'XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX';
-$token  = 'XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX';
+$key   = 'XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX';
+$token = 'XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX';
 
-$slimClient = new \SlimSurveys\Client($apiKey, $token);
+$slimClient = new \SlimSurveys\Client($key, $token);
 ```
 
 You can also use a token setter to pass a token to an existing client if it was not available when the client was created.
@@ -110,7 +110,160 @@ var_dump($response);
 
 ### API Methods
 
-For now please review the client code for the available API methods and required parameters.
+The following API methods are available. They're listed in the same order as the [API documentation](https://slimsurveys.com/developer/docs) to help match up the methods with the official docs.
+
+####Authentication
+
+```
+getAuthToken($email, $password)
+```
+
+####Answers
+
+```
+getSurveyAnswers($surveyId, $uvid = null)
+
+getSurveyAnswersByUid($surveyUid, $uvid = null)
+
+getQuestionAnswers($questionId)
+
+createQuestionAnswer($questionId, $answer, $milestone = '', $uvid = '')
+```
+
+####Identities
+
+```
+createSurveyIdentity($surveyId, $uvid, $data)
+
+createSurveyIdentityByUid($surveyUid, $uvid, $data)
+```
+
+####Images
+
+```
+getImage($imageId)
+
+createQuestionImage($questionId, $file, $position = 0)
+
+deleteImage($imageId)
+```
+
+####Options
+
+```
+getOption($optionId)
+
+createQuestionOption($questionId, $value = null, $position = 0)
+
+updateOption($optionId, $value, $position = 0)
+
+deleteOption($optionId)
+```
+
+####Questions
+
+```
+getQuestion($questionId)
+
+createSurveyQuestion($surveyId, $type, $text = '', $position = 0)
+
+createSurveyQuestionByUid($surveyUid, $type, $text = '', $position = 0)
+
+updateQuestion($questionId, $text = '', $position = 0)
+
+deleteQuestion($questionId)
+```
+
+####Results
+
+```
+getSurveyResults($surveyId)
+
+getSurveyResultsByUid($surveyUid)
+
+getQuestionResults($questionId)
+```
+
+####Surveys
+
+```
+getSurvey($surveyId)
+
+getSurveyByUid($surveyUid)
+
+getSurveyEmbed($surveyId)
+
+getSurveyEmbedByUid($surveyUid)
+
+getUserSurveys($userId)
+
+getUserSurveysByUsername($username)
+
+getMySurveys()
+
+createSurvey(
+    $name, 
+    $description = null,
+    $refresh     = false,
+    $repeat      = false,
+    $metadata    = null,
+    $callback    = null
+)
+
+updateSurvey(
+    $surveyId,
+    $name, 
+    $description = null,
+    $refresh     = false,
+    $repeat      = false,
+    $metadata    = null,
+    $callback    = null
+)
+
+updateSurveyByUid(
+    $surveyUid,
+    $name, 
+    $description = null,
+    $refresh     = false,
+    $repeat      = false,
+    $metadata    = null,
+    $callback    = null
+)
+
+copySurvey($surveyId)
+
+copySurveyByUid($surveyUid)
+
+deleteSurvey($surveyId)
+```
+
+####Users
+
+```
+me()
+
+register($email, $password, $notifications = true)
+
+getPasswordResetToken($email)
+
+resetPassword($token, $password, $confirm)
+
+updateSurveyTab($surveyId)
+
+updateSurveyTabByUid($surveyUid)
+
+updateVanityName($name)
+
+updatePrivacy($flag)
+
+updateEmail($email)
+
+updateThanks($facebookUrl = null, $twitterUrl = null, $websiteUrl = null)
+
+updatePassword($password, $confirm)
+
+deleteSurveyTab()
+```
 
 ### Requirements
 
