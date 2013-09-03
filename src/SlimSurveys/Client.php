@@ -515,6 +515,134 @@ class Client
         return $this->setUrl('surveys/mine')->get();
     }
 
+    /**
+     * Create survey
+     * 
+     * @param  string  $name        name
+     * @param  string  $description description
+     * @param  boolean $refresh     reload survey after completion
+     * @param  boolean $repeat      allow respondents to take survey multiple times
+     * @param  string  $metadata    metadata you app may use
+     * @param  string  $callback    url to send instead of thank you page 
+     * @return Client
+     */
+    public function createSurvey(
+        $name, 
+        $description = null,
+        $refresh     = false,
+        $repeat      = false,
+        $metadata    = null,
+        $callback    = null
+    )
+    {
+        return $this->setUrl('surveys/create')
+            ->setField('name', $name)
+            ->setField('description', $description)
+            ->setField('refresh', $refresh)
+            ->setField('repeat', $repeat)
+            ->setField('metadata', $metadata)
+            ->setField('callback', $callback)
+            ->post();
+    }
+
+    /**
+     * Update survey
+     * 
+     * @param  integer $surveyId    survey id
+     * @param  string  $name        name
+     * @param  string  $description description
+     * @param  boolean $refresh     reload survey after completion
+     * @param  boolean $repeat      allow respondents to take survey multiple times
+     * @param  string  $metadata    metadata you app may use
+     * @param  string  $callback    url to send instead of thank you page 
+     * @return Client
+     */
+    public function updateSurvey(
+        $surveyId,
+        $name, 
+        $description = null,
+        $refresh     = false,
+        $repeat      = false,
+        $metadata    = null,
+        $callback    = null
+    )
+    {
+        return $this->setUrl('surveys/survey/' . $surveyId)
+            ->setField('name', $name)
+            ->setField('description', $description)
+            ->setField('refresh', $refresh)
+            ->setField('repeat', $repeat)
+            ->setField('metadata', $metadata)
+            ->setField('callback', $callback)
+            ->post();
+    }
+
+    /**
+     * Update survey by uid
+     * 
+     * @param  integer $surveyId    survey uid
+     * @param  string  $name        name
+     * @param  string  $description description
+     * @param  boolean $refresh     reload survey after completion
+     * @param  boolean $repeat      allow respondents to take survey multiple times
+     * @param  string  $metadata    metadata you app may use
+     * @param  string  $callback    url to send instead of thank you page 
+     * @return Client
+     */
+    public function updateSurveyByUid(
+        $surveyId,
+        $name, 
+        $description = null,
+        $refresh     = false,
+        $repeat      = false,
+        $metadata    = null,
+        $callback    = null
+    )
+    {
+        return $this->setUrl('surveys/survey')
+            ->setQuery('survey_uid', $surveyId)
+            ->setField('name', $name)
+            ->setField('description', $description)
+            ->setField('refresh', $refresh)
+            ->setField('repeat', $repeat)
+            ->setField('metadata', $metadata)
+            ->setField('callback', $callback)
+            ->post();
+    }
+
+    /**
+     * Copy survey
+     * 
+     * @param  integer $surveyId survey id
+     * @return Client
+     */
+    public function copySurvey($surveyId)
+    {
+        return $this->setUrl('surveys/copy/' . $surveyId)->post();
+    }
+
+    /**
+     * Copy survey by uid
+     * 
+     * @param  integer $surveyId survey uid
+     * @return Client
+     */
+    public function copySurveyByUid($surveyId)
+    {
+        return $this->setUrl('surveys/copy')->setQuery('survey_uid', $surveyId)->post();
+    }
+
+    /**
+     * Delete survey
+     * 
+     * @param  integer $surveyId survey id
+     * @return Client
+     */
+    public function deleteSurvey($surveyId)
+    {
+        return $this->setUrl('surveys/survey/' . $surveyId)->delete();
+    }
+
 // ===================================================================================
 // #users
 // ===================================================================================
