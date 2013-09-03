@@ -110,15 +110,15 @@ var_dump($response);
 
 ### API Methods
 
-The following API methods are available. They're listed in the same order as the [API documentation](https://slimsurveys.com/developer/docs) to help match up the methods with the official docs.
+The following API methods are available. They're listed in the same order as the [API documentation](https://slimsurveys.com/developer/docs) so you can easily match up the methods to the official docs.
 
-####Authentication
+##### Authentication
 
 ```
 getAuthToken($email, $password)
 ```
 
-####Answers
+##### Answers
 
 ```
 getSurveyAnswers($surveyId, $uvid = null)
@@ -130,7 +130,7 @@ getQuestionAnswers($questionId)
 createQuestionAnswer($questionId, $answer, $milestone = '', $uvid = '')
 ```
 
-####Identities
+##### Identities
 
 ```
 createSurveyIdentity($surveyId, $uvid, $data)
@@ -138,7 +138,7 @@ createSurveyIdentity($surveyId, $uvid, $data)
 createSurveyIdentityByUid($surveyUid, $uvid, $data)
 ```
 
-####Images
+##### Images
 
 ```
 getImage($imageId)
@@ -148,7 +148,7 @@ createQuestionImage($questionId, $file, $position = 0)
 deleteImage($imageId)
 ```
 
-####Options
+##### Options
 
 ```
 getOption($optionId)
@@ -160,7 +160,7 @@ updateOption($optionId, $value, $position = 0)
 deleteOption($optionId)
 ```
 
-####Questions
+##### Questions
 
 ```
 getQuestion($questionId)
@@ -174,7 +174,7 @@ updateQuestion($questionId, $text = '', $position = 0)
 deleteQuestion($questionId)
 ```
 
-####Results
+##### Results
 
 ```
 getSurveyResults($surveyId)
@@ -184,7 +184,7 @@ getSurveyResultsByUid($surveyUid)
 getQuestionResults($questionId)
 ```
 
-####Surveys
+##### Surveys
 
 ```
 getSurvey($surveyId)
@@ -237,7 +237,7 @@ copySurveyByUid($surveyUid)
 deleteSurvey($surveyId)
 ```
 
-####Users
+##### Users
 
 ```
 me()
