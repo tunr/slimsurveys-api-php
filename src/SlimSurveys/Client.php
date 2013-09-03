@@ -1140,6 +1140,16 @@ class Client
     {
         return (int) $code === $this->getCode();
     }
+
+    /**
+     * Determine http response code 200
+     *
+     * @return boolean
+     */
+    public function ok()
+    {
+        return 200 === $this->getCode();
+    }
 }
 
 /*
